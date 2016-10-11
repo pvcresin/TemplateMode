@@ -1,14 +1,15 @@
-package com.mydomain.mymode;
+package com.mydomain.template;
 
 import java.io.File;
+
 import processing.app.Base;
-import processing.app.Editor;
-import processing.app.EditorState;
+import processing.app.ui.Editor;
+import processing.app.ui.EditorState;
 import processing.app.Mode;
 import processing.mode.java.JavaMode;
 
 /**
- * Mode Template for extending Java mode in Processing IDE 2.0 or later.
+ * Mode Template for extending Java mode in Processing IDE 3.0 or later.
  *
  */
 public class TemplateMode extends JavaMode {
@@ -24,7 +25,7 @@ public class TemplateMode extends JavaMode {
      */
     @Override
     public String getTitle() {
-        return "Mode Template";
+        return "Template";
     }
 
     /**
@@ -67,7 +68,7 @@ public class TemplateMode extends JavaMode {
         return null;
     }
     */
-    
+
     /**
      * Retrieve the ClassLoader for JavaMode. This is used by Compiler to load
      * ECJ classes. Thanks to Ben Fry.

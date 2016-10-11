@@ -1,46 +1,62 @@
 <?xml version="1.0"?>
-<project name="TemplateMode" default="install" basedir="./">
-    <description>Template for extending Java Mode in Processing 2.0</description>
+<project name="TemplateMode" default="run" basedir="./">
+    <description>Template for extending Java Mode in Processing 3.0</description>
 
     <!-- name of your mode package (will be used as dir name) -->
-	<!-- note, this must be the same name as your mode subclass, AND the same name as this build project. -->
+    <!-- note, this must be the same name as your mode subclass, AND the same name as this build project. -->
     <property name="lib.name" 	value="TemplateMode" />
 
-    <!-- version -->
+    <!-- mode version -->
     <property name="release"	value="0.1" />
 
     <!-- java version -->
-    <property name="java.target.version" value="1.6" />
+    <property name="java.target.version" value="1.8" />
 
-    <!-- location of processing jars (core.jar, pde.jar, ..) -->
-    <property name="processing.classes.core" location="../p5-git/processing/core/library/" />
-    <property name="processing.classes.pde" location="../p5-git/processing/app/" />
-    
+    <!-- location of processing -->
+    <property name="processing"
+              location="${user.home}/Downloads/PROGRAM/Processing/processing-3.2.1" />
+
+    <!-- location of processing jars (core.jar, pde.jar, JavaMode.jar..) -->
+    <property name="processing.classes.core" location="${processing}/core/library" />
+    <property name="processing.classes.pde" location="${processing}/lib" />
+    <property name="processing.modes.java" location="${processing}/modes/java/mode" />
+
     <!-- folder to install modes in (probably a folder called "modes" inside your sketchbook folder) -->
-    <property name="processing.modes" location="/Users/mlg/Documents/Processing/modes"/>
+    <property name="processing.modes" location="${user.home}/Documents/Processing3/modes"/>
 
     <!-- path to your processing executable. -->
-    <property name="processing.executable" location="../p5-git/processing/build/macosx/work/Processing.app/Contents/MacOS/JavaApplicationStub"/>
+    <property name="processing.executable" location="${processing}/processing.exe"/>
 
 
+    <!-- mode info - - - - - - - - - - - - - - - - - - - - - - -->
 
+    <property name="author" 	value="Author" />
+    <property name="website" 	value="https://author.com" />
+    <property name="github" 	value="https://github.com/Author/TemplateMode" />
+    <property name="sentence" 	value="Template for extending Java Mode" />
+    <property name="paragraph"
+              value="This is a simple template for creating a Processing mode, extending the standard Java mode." />
+
+    <!-- directory - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <property name="src" 		value="./src" />
+    <property name="lib" 		value="${processing.modes.java}" />
+    <property name="resources" 	value="./resources" />
+    <property name="build" 		value="./out/build" />
+    <property name="dist" 		value="./out/dist" />
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - -->
-    <property name="src" 		value="src" />
-    <property name="build" 		value="build" />
-    <property name="bin" 		value="bin" />
-    <property name="dist" 		value="dist" />
 
     <path id="library-classpath">
         <fileset dir="${processing.classes.core}" >
             <include name="*.jar" />
         </fileset>
-        
+
         <fileset dir="${processing.classes.pde}" >
             <include name="*.jar" />
         </fileset>
 
-        <fileset dir="lib" >
+        <fileset dir="${lib}" >
             <include name="*.jar" />
         </fileset>
     </path>
@@ -49,8 +65,8 @@
         BUILD
     - - - - - - - - - - - - - - - - - - - - - - - -->
     <target name="build">
-        <propertyfile file="build.number" /> <!-- create the build.number file if it doesn't exist -->
-        <buildnumber file="build.number" />
+        <propertyfile file="./out/build.number" /> <!-- create the build.number file if it doesn't exist -->
+        <buildnumber file="./out/build.number" />
 
         <mkdir dir="${build}" />
 
@@ -70,23 +86,28 @@
         <mkdir dir="${bundle}" />
         <mkdir dir="${bundle}/mode" />
 
-        <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="build"/>
-		<!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
-		    <zipgroupfileset dir="lib" includes="*.jar" />
-		</zip-->
+        <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="${build}"/>
+        <!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
+            <zipgroupfileset dir="lib" includes="*.jar" />
+        </zip-->
 
         <copy todir="${bundle}">
-            <fileset dir="resources/" />
+            <fileset dir="${resources}" />
         </copy>
 
         <copy todir="${bundle}/mode">
-            <fileset dir="lib/" />
+            <fileset dir="${lib}" />
         </copy>
 
-        <replaceregexp file="${bundle}/mode.properties" flags="g"
-                               match="@@version@@" replace="${build.number}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g"
-                               match="@@pretty-version@@" replace="${release}" />
+        <!-- for mode.properties -->
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@mode@@" replace="${lib.name}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@author@@" replace="${author}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@website@@" replace="${website}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@github@@" replace="${github}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@sentence@@" replace="${website}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@paragraph@@" replace="${paragraph}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@version@@" replace="${build.number}" />
+        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@pretty-version@@" replace="${release}" />
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - -
@@ -112,6 +133,6 @@
         RUN
     - - - - - - - - - - - - - - - - - - - - - - - -->
     <target name="run" depends="install">
-        <exec executable="${processing.executable}" spawn="false" />
+        <exec executable="${processing.executable}" spawn="true" />
     </target>
 </project>
