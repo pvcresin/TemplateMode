@@ -3,13 +3,10 @@ package com.mydomain.template;
 import java.io.File;
 
 import processing.app.Base;
-import processing.app.ui.Editor;
-import processing.app.ui.EditorState;
-import processing.app.Mode;
 import processing.mode.java.JavaMode;
 
 /**
- * Mode Template for extending Java mode in Processing IDE 3.0 or later.
+ * Mode Template for extending Java mode in Processing 3.x
  */
 public class TemplateMode extends JavaMode {
     public TemplateMode(Base base, File folder) {
