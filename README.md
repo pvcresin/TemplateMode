@@ -8,7 +8,8 @@
   - `{your-processing-path}/core/library`
 - `pde.jar`
   - `{your-processing-path}/lib`
-- .jar files related to JavaMode - `{your-processing-path}/modes/java/mode`
+- .jar files related to JavaMode 
+  - `{your-processing-path}/modes/java/mode`
 
 ![](https://i.gyazo.com/f68e23e224aa2f856c29d5de499543ee.png)
 
