@@ -10,7 +10,6 @@ import processing.mode.java.JavaMode;
 
 /**
  * Mode Template for extending Java mode in Processing IDE 3.0 or later.
- *
  */
 public class TemplateMode extends JavaMode {
     public TemplateMode(Base base, File folder) {
@@ -18,10 +17,7 @@ public class TemplateMode extends JavaMode {
     }
 
     /**
-     * Return the pretty/printable/menu name for this mode. This is separate
-     * from the single word name of the folder that contains this mode. It could
-     * even have spaces, though that might result in sheer madness or total
-     * mayhem.
+     * Return the pretty/printable/menu name for this mode.
      */
     @Override
     public String getTitle() {
@@ -68,22 +64,4 @@ public class TemplateMode extends JavaMode {
         return null;
     }
     */
-
-    /**
-     * Retrieve the ClassLoader for JavaMode. This is used by Compiler to load
-     * ECJ classes. Thanks to Ben Fry.
-     *
-     * @return the class loader from java mode
-     */
-    @Override
-    public ClassLoader getClassLoader() {
-        for (Mode m : base.getModeList()) {
-            if (m.getClass() == JavaMode.class) {
-                JavaMode jMode = (JavaMode) m;
-                return jMode.getClassLoader();
-            }
-        }
-        return null;  // badness
-    }
-
 }
