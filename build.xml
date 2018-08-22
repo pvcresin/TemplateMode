@@ -1,78 +1,61 @@
 <?xml version="1.0"?>
 <project name="TemplateMode" default="run" basedir="./">
-    <description>Template for extending Java Mode in Processing 3.0</description>
-
     <!-- name of your mode package (will be used as dir name) -->
-    <!-- note, this must be the same name as your mode subclass, AND the same name as this build project. -->
-    <property name="lib.name" 	value="TemplateMode" />
+    <!-- this must be the same name as your mode subclass, AND the same name as this build project. -->
+    <property name="mode" value="TemplateMode"/>
 
     <!-- mode version -->
-    <property name="release"	value="0.1" />
+    <property name="version" value="0.1"/>
 
     <!-- java version -->
     <property name="java.target.version" value="1.8" />
 
     <!-- location of processing -->
-    <property name="processing"
-              location="${user.home}/Downloads/PROGRAM/Processing/processing-3.2.1" />
+    <property name="processing" location="${user.home}/Downloads/PROGRAM/Processing/processing-3.3.5"/>
 
     <!-- location of processing jars (core.jar, pde.jar, JavaMode.jar..) -->
-    <property name="processing.classes.core" location="${processing}/core/library" />
-    <property name="processing.classes.pde" location="${processing}/lib" />
-    <property name="processing.modes.java" location="${processing}/modes/java/mode" />
+    <property name="processing.core" location="${processing}/core/library"/>
+    <property name="processing.pde" location="${processing}/lib"/>
+    <property name="processing.java.mode" location="${processing}/modes/java/mode"/>
 
-    <!-- folder to install modes in (probably a folder called "modes" inside your sketchbook folder) -->
-    <property name="processing.modes" location="${user.home}/Documents/Processing3/modes"/>
+    <!-- folder to install modes in ( "modes" inside your sketchbook folder) -->
+    <property name="processing.modes" location="${user.home}/Documents/Processing/modes"/>
 
     <!-- path to your processing executable. -->
     <property name="processing.executable" location="${processing}/processing.exe"/>
 
-
-    <!-- mode info - - - - - - - - - - - - - - - - - - - - - - -->
-
-    <property name="author" 	value="Author" />
-    <property name="website" 	value="https://author.com" />
-    <property name="github" 	value="https://github.com/Author/TemplateMode" />
+    <!-- mode info - - - - - - - - - - - - - - - -->
+    <property name="author" value="Author Name"/>
+    <property name="author.url" value="https://author.com"/>
+    <property name="url" value="https://github.com/Author/TemplateMode"/>
     <property name="sentence" 	value="Template for extending Java Mode" />
     <property name="paragraph"
               value="This is a simple template for creating a Processing mode, extending the standard Java mode." />
-
-    <!-- directory - - - - - - - - - - - - - - - - - - - - - - -->
-
-    <property name="src" 		value="./src" />
-    <property name="lib" 		value="${processing.modes.java}" />
-    <property name="resources" 	value="./resources" />
-    <property name="build" 		value="./out/build" />
-    <property name="dist" 		value="./out/dist" />
-
-    <!-- - - - - - - - - - - - - - - - - - - - - - - -->
-
-    <path id="library-classpath">
-        <fileset dir="${processing.classes.core}" >
-            <include name="*.jar" />
-        </fileset>
-
-        <fileset dir="${processing.classes.pde}" >
-            <include name="*.jar" />
-        </fileset>
-
-        <fileset dir="${lib}" >
-            <include name="*.jar" />
-        </fileset>
-    </path>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - -
         BUILD
     - - - - - - - - - - - - - - - - - - - - - - - -->
     <target name="build">
-        <propertyfile file="./out/build.number" /> <!-- create the build.number file if it doesn't exist -->
+        <mkdir dir="./out/"/>
+
+        <propertyfile file="./out/build.number"/>
         <buildnumber file="./out/build.number" />
 
-        <mkdir dir="${build}" />
+        <mkdir dir="./out/build"/>
 
-        <javac srcdir="${src}" destdir="${build}" source="${java.target.version}" includeantruntime="false">
+        <javac srcdir="./src" destdir="./out/build" source="${java.target.version}" includeantruntime="false">
             <classpath>
-                <path refid="library-classpath"/>
+                <fileset dir="${processing.core}">
+                    <include name="*.jar"/>
+                </fileset>
+
+                <fileset dir="${processing.pde}">
+                    <include name="*.jar"/>
+                </fileset>
+
+                <fileset dir="${processing.java.mode}">
+                    <include name="*.jar"/>
+                </fileset>
             </classpath>
         </javac>
     </target>
@@ -81,52 +64,40 @@
         PACKAGE
     - - - - - - - - - - - - - - - - - - - - - - - -->
     <target name="package" depends="build">
-        <delete dir="${dist}" />
-        <property name="bundle" value="${dist}/${lib.name}"/>
+        <delete dir="./out/dist"/>
+
+        <property name="bundle" value="./out/dist/${mode}"/>
+
         <mkdir dir="${bundle}" />
         <mkdir dir="${bundle}/mode" />
 
-        <jar jarfile="${bundle}/mode/${lib.name}.jar" basedir="${build}"/>
-        <!--zip destfile="${dist}/mode/${lib.name}.jar" excludes="**/*.MF">
-            <zipgroupfileset dir="lib" includes="*.jar" />
-        </zip-->
+        <jar jarfile="${bundle}/mode/${mode}.jar" basedir="./out/build"/>
 
         <copy todir="${bundle}">
-            <fileset dir="${resources}" />
+            <fileset dir="./resources"/>
         </copy>
 
-        <copy todir="${bundle}/mode">
-            <fileset dir="${lib}" />
-        </copy>
-
-        <!-- for mode.properties -->
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@mode@@" replace="${lib.name}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@author@@" replace="${author}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@website@@" replace="${website}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@github@@" replace="${github}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@sentence@@" replace="${website}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@paragraph@@" replace="${paragraph}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@version@@" replace="${build.number}" />
-        <replaceregexp file="${bundle}/mode.properties" flags="g" match="@@pretty-version@@" replace="${release}" />
+        <!-- edit mode.properties -->
+        <property name="properties" value="${bundle}/mode.properties"/>
+        <replaceregexp file="${properties}" flags="g" match="@@mode@@" replace="${mode}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@author@@" replace="${author}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@author.url@@" replace="${author.url}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@url@@" replace="${url}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@sentence@@" replace="${sentence}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@paragraph@@" replace="${paragraph}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@version@@" replace="${build.number}"/>
+        <replaceregexp file="${properties}" flags="g" match="@@pretty-version@@" replace="${version}"/>
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - -
         INSTALL
     - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="install" depends="package" >
-        <delete dir="${processing.modes}/${lib.name}" />
+    <target name="install" depends="package">
+        <delete dir="${processing.modes}/${mode}"/>
 
         <copy todir="${processing.modes}/">
-            <fileset dir="${dist}" />
+            <fileset dir="./out/dist"/>
         </copy>
-    </target>
-
-    <!-- - - - - - - - - - - - - - - - - - - - - - -
-        CLEAN
-    - - - - - - - - - - - - - - - - - - - - - - - -->
-    <target name="clean" >
-        <delete dir="${build}" />
-        <delete dir="${dist}" />
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - -
